@@ -2,6 +2,4 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome to depp ocean of payments');
-});
+Route::get('/', fn () => response()->json(['ok' => true, 'message' => 'Welcome to PayCore API!']));
