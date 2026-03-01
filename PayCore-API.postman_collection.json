@@ -1,0 +1,466 @@
+{
+	"info": {
+		"name": "PayCore Backend API",
+		"description": "API collection for PayCore Backend – payment gateway aggregator.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000/api",
+			"type": "string"
+		},
+		{
+			"key": "auth_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "api_key",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "merchant_slug",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Health",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/health",
+							"host": ["{{base_url}}"],
+							"path": ["health"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var json = pm.response.json();",
+									"if (json.token) {",
+									"    pm.collectionVariables.set('auth_token', json.token);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"John Doe\",\n    \"email\": \"john@example.com\",\n    \"password\": \"password123\",\n    \"merchant_name\": \"Acme Inc\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/register",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "register"]
+						}
+					}
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var json = pm.response.json();",
+									"if (json.token) {",
+									"    pm.collectionVariables.set('auth_token', json.token);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"john@example.com\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "login"]
+						}
+					}
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{auth_token}}" }
+						],
+						"url": {
+							"raw": "{{base_url}}/auth/logout",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "logout"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Merchant Credentials",
+			"item": [
+				{
+					"name": "Upsert Stripe Credentials",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{auth_token}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"secret_key\": \"sk_test_xxx\",\n    \"publishable_key\": \"pk_test_xxx\",\n    \"webhook_secret\": \"whsec_xxx\",\n    \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/credentials/stripe",
+							"host": ["{{base_url}}"],
+							"path": ["credentials", "stripe"]
+						}
+					}
+				},
+				{
+					"name": "Upsert Paddle Credentials",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{auth_token}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"api_key\": \"pdl_test_xxx\",\n    \"vendor_id\": \"12345\",\n    \"webhook_secret\": \"pdl_whsec_xxx\",\n    \"sandbox\": true,\n    \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/credentials/paddle",
+							"host": ["{{base_url}}"],
+							"path": ["credentials", "paddle"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "API Keys",
+			"item": [
+				{
+					"name": "List API Keys",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{auth_token}}" }
+						],
+						"url": {
+							"raw": "{{base_url}}/api-keys",
+							"host": ["{{base_url}}"],
+							"path": ["api-keys"]
+						}
+					}
+				},
+				{
+					"name": "Create API Key",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var json = pm.response.json();",
+									"if (json.api_key) {",
+									"    pm.collectionVariables.set('api_key', json.api_key);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{auth_token}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"My API Key\",\n    \"expires_in_days\": 90\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api-keys",
+							"host": ["{{base_url}}"],
+							"path": ["api-keys"]
+						}
+					}
+				},
+				{
+					"name": "Revoke API Key",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{auth_token}}" }
+						],
+						"url": {
+							"raw": "{{base_url}}/api-keys/1",
+							"host": ["{{base_url}}"],
+							"path": ["api-keys", "1"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Checkout Tokens",
+			"item": [
+				{
+					"name": "Issue Checkout Token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{auth_token}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"purpose\": \"one_time\",\n    \"ttl_minutes\": 10\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/checkout-tokens",
+							"host": ["{{base_url}}"],
+							"path": ["checkout-tokens"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Payments (Stripe)",
+			"item": [
+				{
+					"name": "Create One-Time Payment (Stripe)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "X-API-KEY", "value": "{{api_key}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"amount\": 5000,\n    \"currency\": \"USD\",\n    \"success_url\": \"https://example.com/success\",\n    \"cancel_url\": \"https://example.com/cancel\",\n    \"customer_email\": \"customer@example.com\",\n    \"description\": \"Test payment\",\n    \"metadata\": { \"order_id\": \"ORD-123\" },\n    \"checkout_token\": \"<checkout_token_here>\",\n    \"idempotency_key\": \"idem-unique-key-1\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/payments/stripe/one-time",
+							"host": ["{{base_url}}"],
+							"path": ["payments", "stripe", "one-time"]
+						}
+					}
+				},
+				{
+					"name": "Create Subscription (Stripe)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "X-API-KEY", "value": "{{api_key}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"price_id\": \"price_xxx\",\n    \"success_url\": \"https://example.com/success\",\n    \"cancel_url\": \"https://example.com/cancel\",\n    \"customer_email\": \"customer@example.com\",\n    \"metadata\": {},\n    \"checkout_token\": \"<checkout_token_here>\",\n    \"idempotency_key\": \"idem-sub-1\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/payments/stripe/subscriptions",
+							"host": ["{{base_url}}"],
+							"path": ["payments", "stripe", "subscriptions"]
+						}
+					}
+				},
+				{
+					"name": "Refund (Stripe)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "X-API-KEY", "value": "{{api_key}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"payment_id\": 1,\n    \"amount\": 2500,\n    \"reason\": \"Customer requested\",\n    \"payment_intent\": \"pi_xxx\",\n    \"idempotency_key\": \"idem-refund-1\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/payments/stripe/refunds",
+							"host": ["{{base_url}}"],
+							"path": ["payments", "stripe", "refunds"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Payments (Paddle)",
+			"item": [
+				{
+					"name": "Create One-Time Payment (Paddle)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "X-API-KEY", "value": "{{api_key}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"amount\": 3000,\n    \"currency\": \"USD\",\n    \"success_url\": \"https://example.com/success\",\n    \"cancel_url\": \"https://example.com/cancel\",\n    \"customer_email\": \"customer@example.com\",\n    \"description\": \"Paddle one-time payment\",\n    \"metadata\": {},\n    \"checkout_token\": \"<checkout_token_here>\",\n    \"idempotency_key\": \"idem-paddle-1\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/payments/paddle/one-time",
+							"host": ["{{base_url}}"],
+							"path": ["payments", "paddle", "one-time"]
+						}
+					}
+				},
+				{
+					"name": "Create Subscription (Paddle)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "X-API-KEY", "value": "{{api_key}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"price_id\": \"pri_xxx\",\n    \"customer_id\": \"ctm_xxx\",\n    \"metadata\": {},\n    \"checkout_token\": \"<checkout_token_here>\",\n    \"idempotency_key\": \"idem-paddle-sub-1\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/payments/paddle/subscriptions",
+							"host": ["{{base_url}}"],
+							"path": ["payments", "paddle", "subscriptions"]
+						}
+					}
+				},
+				{
+					"name": "Refund (Paddle)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "X-API-KEY", "value": "{{api_key}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"payment_id\": 1,\n    \"amount\": 1500,\n    \"reason\": \"Refund requested\",\n    \"transaction_id\": \"txn_xxx\",\n    \"idempotency_key\": \"idem-paddle-refund-1\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/payments/paddle/refunds",
+							"host": ["{{base_url}}"],
+							"path": ["payments", "paddle", "refunds"]
+						}
+					}
+				},
+				{
+					"name": "Cancel Subscription (Paddle)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Accept", "value": "application/json" },
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "X-API-KEY", "value": "{{api_key}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"subscription_id\": \"sub_xxx\",\n    \"immediate\": false\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/paddle/subscriptions/cancel",
+							"host": ["{{base_url}}"],
+							"path": ["paddle", "subscriptions", "cancel"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Webhooks",
+			"item": [
+				{
+					"name": "Stripe Webhook",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Stripe-Signature", "value": "<stripe_signature>" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"type\": \"checkout.session.completed\",\n    \"data\": {\n        \"object\": {}\n    }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/webhooks/stripe/{{merchant_slug}}",
+							"host": ["{{base_url}}"],
+							"path": ["webhooks", "stripe", "{{merchant_slug}}"]
+						}
+					}
+				},
+				{
+					"name": "Paddle Webhook",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Paddle-Signature", "value": "<paddle_signature>" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"event_type\": \"transaction.completed\",\n    \"data\": {}\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/webhooks/paddle/{{merchant_slug}}",
+							"host": ["{{base_url}}"],
+							"path": ["webhooks", "paddle", "{{merchant_slug}}"]
+						}
+					}
+				}
+			]
+		}
+	]
+}
