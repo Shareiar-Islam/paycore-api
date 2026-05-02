@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\StripeWebhookController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/health', fn () => response()->json(['ok' => true]));
+Route::get('/', fn () => response()->json(['message' => 'welcome to the merchant api']));
 
 Route::prefix('auth')->group(function (): void {
     Route::post('/register', [AuthController::class, 'register']);
