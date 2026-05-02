@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Path .\\\\app -Recurse -Directory)",
+      "Bash(Sort-Object FullName)",
+      "Read(//d/laragon/www/paycore/paycore-frontend/app/\\(dashboard\\)/**)",
+      "Read(//d/laragon/www/paycore/paycore-frontend/components/dashboard/**)",
+      "Read(//d/laragon/www/paycore/paycore-frontend/lib/**)",
+      "Read(//d/laragon/www/paycore/paycore-frontend/**)",
+      "Bash(grep -E \"\\\\.\\(ts|js|php|py\\)$\")",
+      "Bash(xargs grep *)",
+      "Bash(Get-ChildItem -Recurse -Filter \"*.tsx\" \"D:\\\\laragon\\\\www\\\\paycore\\\\paycore-frontend\\\\app\")",
+      "Bash(Select-Object FullName)",
+      "Bash(Get-ChildItem -Path \"D:\\\\laragon\\\\www\\\\paycore\\\\paycore-frontend\" -Recurse -File)"
+    ],
+    "additionalDirectories": [
+      "D:\\laragon\\www\\paycore\\paycore-frontend\\lib",
+      "D:\\laragon\\www\\paycore\\paycore-frontend\\app\\(auth)\\login"
+    ]
+  }
+}
